@@ -1,0 +1,124 @@
+📁 Part 1: Notification Script Creation in the ZABBIX server.
+
+Script Location:
+/usr/lib/zabbix/alertscripts/telegram.py
+
+
+Interpreter:
+#!/usr/bin/python3
+
+Dependencies:
+Requires the requests library for HTTP communication.
+
+Telegram Bot Token:
+#Change the token in the script file (telegram.py)
+7997271903:AAFDJcmGMicr_M-1FsIQhtIq6lsiZT9****   
+
+Script Input Parameters:
+#The script is designed to accept three arguments:
+
+sys.argv[1]  # Chat ID: {ALERT.SENDTO}
+sys.argv[2]  # Subject: {ALERT.SUBJECT}
+sys.argv[3]  # Message body: {ALERT.MESSAGE}
+
+
+HTML Sanitization:
+A helper function escape_html() was implemented to convert special characters (&, <, >) to their HTML-safe equivalents, preventing 400 Bad Request errors when sending messages.
+
+API Interaction:
+Sends a POST request to:
+https://api.telegram.org/bot<TOKEN>/sendMessage
+
+
+The payload includes:
+chat_id
+text
+parse_mode set to "HTML" for rich formatting support.
+
+
+Error Logging:
+Any execution errors are logged to:
+/tmp/zabbix_telegram_error.log
+The log includes exception details and API responses to assist in debugging.
+
+
+🔒 Part 2: File System Permissions Configuration
+To allow Zabbix to execute the script, the following permission changes were applied:
+
+Change Ownership:
+sudo chown zabbix:zabbix /usr/lib/zabbix/alertscripts/telegram.py
+
+Make Executable:
+sudo chmod +x /usr/lib/zabbix/alertscripts/telegram.py
+
+
+
+🖥️ Part 3: Configurations in Zabbix Web Interface:
+	
+
+	1. Alerts --> Media Types
+
+		Configuration:
+
+			Name: Telegram
+			Type: Script
+			Script name: telegram.py
+			Parameters (in order): 
+
+				-4969659999	#Chat ID of user or group should take from telegram. 
+
+				{ALERT.SUBJECT}
+
+				{ALERT.MESSAGE}
+				
+
+		 Message Template Configuration:
+		  	
+			#Add message template: (Problem, Problem recovery, Problem update..)
+
+
+
+	2. Users --> Users. Add user for Notification:
+		
+		User:
+			Name: Telegram Alerts
+			Groups: Zabbix administrators
+			Language: English 
+		
+		Media:
+			
+			Type: Telegram
+			Send to: -4969659999
+			Use if severity: Not classified #can change what you want
+		
+			
+
+	      Permissions:
+			Role: Admin role
+
+
+	3. Users --> User groups--> Zabbix Administrators:
+			Template permissions: Select templates which you need (Read)
+			Host permissions: Select Hosts which you need (Read)
+			Problem tag filters: All filters
+	
+	
+
+
+       4. Alerts --> Actions --> Trigger Actions #can change which is mandatory for your production:
+		
+		Action:
+			Name: Telegram trigger
+			Conditions: Trigger severity
+				     Notclassified
+		
+
+		Operations:
+			
+	                Operations: Send to Telegram user
+			
+			Recovery operations:Send to Telegram user
+
+			Update operations:Send to Telegram user
+			
+			
