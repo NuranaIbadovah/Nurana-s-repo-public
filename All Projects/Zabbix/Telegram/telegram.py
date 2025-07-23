@@ -9,7 +9,7 @@ if len(sys.argv) < 4:
     sys.exit(1)
 
 # --- CONFIGURATION ---
-TELEGRAM_TOKEN = "7997271903:AAFDJcmGMicr_M-1FsIQhtIq6lsiZT9****"
+TELEGRAM_TOKEN = "YOUR_TELEGRAM_BOT_TOKEN"
 # --------------------
 
 chat_id = sys.argv[1]
@@ -34,7 +34,7 @@ url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
 payload = {
     'chat_id': chat_id,
     'text': full_message,
-    'parse_mode': 'HTML' # Use HTML
+    'parse_mode': 'HTML' 
 }
 
 try:
