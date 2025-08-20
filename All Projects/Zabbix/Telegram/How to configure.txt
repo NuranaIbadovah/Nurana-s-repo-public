@@ -12,7 +12,7 @@ Requires the requests library for HTTP communication.
 
 Telegram Bot Token:
 #Change the token in the script file (telegram.py)
-7997271903:AAFDJcmGMicr_M-1FsIQhtIq6lsiZT9****   
+  
 
 Script Input Parameters:
 #The script is designed to accept three arguments:
